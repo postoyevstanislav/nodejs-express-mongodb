@@ -1,5 +1,6 @@
 const fs = require('fs') //require fs module, fs for a file system
 const http = require('http') // gives us networking capabilities, such us building an http server
+const url = require('url')
 
 /////////////////////////////////////////////
 // FILES
@@ -27,9 +28,27 @@ const http = require('http') // gives us networking capabilities, such us buildi
 
 /////////////////////////////////////////////
 // SERVER
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8')
+const dataObg = JSON.parse(data)
 
 const server = http.createServer((req, res) => {
-    res.end('Hello from the server!')
+const pathName = req.url
+
+if(pathName ==='/' || pathName ==='/overview') {
+    res.end('this is the OVERVIEW')
+} else if (pathName ==='/product') {
+    res.end('This is a PRODUCT')
+} else if(pathName === '/api') {
+    res.writeHead(200, { 'Content-type': 'application/json'})
+    res.end(data) 
+} else {
+    res.writeHead(404,{
+        'Content-type': 'text/html',
+        'my-own-header': 'hello-world'
+    })
+    res.end('<h1>Page not found!</h1>')
+}
+    
 })
 
 server.listen(8000, '127.0.0.1', () => {
